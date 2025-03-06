@@ -17,7 +17,6 @@ namespace CityberryTravel.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Burada varsa modelinizin daha detaylı konfigürasyonlarını yapabilirsiniz
             modelBuilder.Entity<TravelDestination>().Property(p => p.Price).HasColumnType("decimal(18,2)");
         }
     }

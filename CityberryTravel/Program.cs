@@ -6,7 +6,6 @@ using CityberryTravel.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Veritabaný baðlantý dizesini al ve DbContext'i yapýlandýr
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
