@@ -1,0 +1,125 @@
+@model CityberryTravel.Models.TravelDestination
+
+@{
+    ViewData["Title"] = "Delete Destination";
+    Layout = "_Layout";
+}
+
+<!-- Page Header -->
+<div class="bg-gradient-to-r from-red-500 to-red-600 py-8">
+    <div class="container mx-auto px-4">
+        <h1 class="text-3xl font-bold text-white">Delete Destination</h1>
+        <p class="text-white/80 mt-2">Are you sure you want to delete <span class="font-medium">@Model.Name</span>?</p>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 py-10 max-w-5xl">
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div class="p-8">
+            <!-- Warning Banner -->
+            <div class="mb-8 bg-red-50 rounded-lg overflow-hidden">
+                <div class="px-6 py-5 sm:flex sm:items-start">
+                    <div class="flex-shrink-0">
+                        <svg class="h-8 w-8 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="mt-3 sm:mt-0 sm:ml-4">
+                        <h3 class="text-lg font-medium text-red-800">Confirm Deletion</h3>
+                        <div class="mt-2">
+                            <p class="text-red-700">This action cannot be undone. This will permanently delete the destination and its associated data.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <!-- Destination Information -->
+                <div class="space-y-6">
+                    <div class="space-y-1">
+                        <h2 class="text-xl font-semibold text-gray-800">Destination Information</h2>
+                        <div class="h-1 w-20 bg-red-500 rounded"></div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between border-b border-gray-100 pb-2">
+                            <span class="text-gray-500">ID</span>
+                            <span class="font-medium text-gray-800">@Model.Id</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between border-b border-gray-100 pb-2">
+                            <span class="text-gray-500">Name</span>
+                            <span class="font-medium text-gray-800">@Model.Name</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between border-b border-gray-100 pb-2">
+                            <span class="text-gray-500">Price</span>
+                            <span class="font-medium text-gray-800">@Html.DisplayFor(model => model.Price)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Description & Dates -->
+                <div class="space-y-6">
+                    <div>
+                        <div class="space-y-1 mb-4">
+                            <h2 class="text-xl font-semibold text-gray-800">Description</h2>
+                            <div class="h-1 w-20 bg-red-500 rounded"></div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <p class="text-gray-700 whitespace-pre-line">@(string.IsNullOrEmpty(Model.Description) ? "No description provided" : Model.Description)</p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="space-y-1 mb-4">
+                            <h2 class="text-xl font-semibold text-gray-800">Available Dates & Times</h2>
+                            <div class="h-1 w-20 bg-red-500 rounded"></div>
+                        </div>
+                        
+                        @if (Model.AvailableDates != null && Model.AvailableDates.Any())
+                        {
+                            <div class="flex flex-wrap gap-2">
+                                @foreach (var date in Model.AvailableDates.Take(5))
+                                {
+                                    <span class="bg-red-50 text-red-600 text-xs px-2 py-1 rounded-full border border-red-100">
+                                        <i class="far fa-calendar-alt mr-1"></i>@date.ToString("MMM d, yyyy") 
+                                        <span class="ml-1 font-medium"><i class="far fa-clock mr-1"></i>@date.ToString("HH:mm")</span>
+                                    </span>
+                                }
+                                @if (Model.AvailableDates.Count > 5)
+                                {
+                                    <span class="bg-gray-50 text-gray-500 text-xs px-2 py-1 rounded-full border border-gray-200">
+                                        +@(Model.AvailableDates.Count - 5) more
+                                    </span>
+                                }
+                            </div>
+                            <p class="text-red-500 text-sm mt-2">
+                                <i class="fas fa-exclamation-circle mr-1"></i> All @Model.AvailableDates.Count dates will be permanently deleted
+                            </p>
+                        }
+                        else
+                        {
+                            <p class="text-gray-500 italic">No available dates</p>
+                        }
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <form asp-action="Delete" class="pt-6 border-t border-gray-200">
+                <input type="hidden" asp-for="Id" />
+                <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
+                    <button type="submit" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg inline-flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                        <i class="fas fa-trash mr-2"></i> Confirm Delete
+                    </button>
+                    <div class="flex gap-3 w-full sm:w-auto">
+                        <a asp-action="Index" class="flex-1 sm:flex-auto inline-flex items-center justify-center text-gray-600 hover:text-gray-800 font-medium py-3 px-6 border border-gray-300 hover:border-gray-400 rounded-lg transition-colors">
+                            <i class="fas fa-arrow-left mr-2"></i> Cancel
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> 

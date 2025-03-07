@@ -1,0 +1,264 @@
+@model CityberryTravel.Models.TravelDestination
+
+@{
+    ViewData["Title"] = "Edit Destination";
+    Layout = "_Layout";
+}
+
+<!-- Page Header -->
+<div class="bg-gradient-to-r from-blue-500 to-indigo-600 py-8">
+    <div class="container mx-auto px-4">
+        <h1 class="text-3xl font-bold text-white">Edit Destination</h1>
+        <p class="text-white/80 mt-2">Update details for <span class="font-medium">@Model.Name</span></p>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 py-6 max-w-4xl">
+    <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-lg shadow-lg mb-6">
+        <h1 class="text-2xl font-bold">Edit Travel Destination</h1>
+        <p class="opacity-80">Update destination details and available dates</p>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <form id="editForm" asp-action="Edit" method="post">
+            <div asp-validation-summary="All" class="text-red-500 mb-4 p-4 border border-red-200 rounded-lg bg-red-50"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-6">
+                    <div>
+                        <label asp-for="Name" class="block mb-2 text-sm font-medium text-gray-700">Destination Name</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-map-marker-alt text-gray-400"></i>
+                            </div>
+                            <input asp-for="Name" class="pl-10 w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" />
+                        </div>
+                        <span asp-validation-for="Name" class="text-sm text-red-500"></span>
+                    </div>
+                    
+                    <div>
+                        <label asp-for="Description" class="block mb-2 text-sm font-medium text-gray-700">Description</label>
+                        <div class="relative">
+                            <div class="absolute top-3 left-0 pl-3 pointer-events-none">
+                                <i class="fas fa-align-left text-gray-400"></i>
+                            </div>
+                            <textarea asp-for="Description" rows="4" class="pl-10 w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"></textarea>
+                        </div>
+                        <span asp-validation-for="Description" class="text-sm text-red-500"></span>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div>
+                        <label asp-for="Price" class="block mb-2 text-sm font-medium text-gray-700">Price (₺)</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-tag text-gray-400"></i>
+                            </div>
+                            <input asp-for="Price" type="number" step="0.01" class="pl-10 w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" />
+                        </div>
+                        <span asp-validation-for="Price" class="text-sm text-red-500"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8">
+                <div class="flex justify-between items-center mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Available Dates & Times</label>
+                    <button id="add-date" type="button" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center transition-colors">
+                        <i class="fas fa-plus mr-2"></i> Add Date & Time
+                    </button>
+                </div>
+                
+                <div id="dates-container" class="space-y-3">
+                    @if (Model.AvailableDates != null && Model.AvailableDates.Count > 0)
+                    {
+                        for (int i = 0; i < Model.AvailableDates.Count; i++)
+                        {
+                            <div class="flex items-center gap-2">
+                                <div class="relative flex-grow">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-calendar-alt text-gray-400"></i>
+                                    </div>
+                                    @{
+                                        // ISO 8601 formatına çevir (HTML5 datetime-local inputu için)
+                                        var dateValue = Model.AvailableDates[i];
+                                        // HTML5 datetime-local için doğru format: yyyy-MM-ddTHH:mm
+                                        string isoDateValue = dateValue.ToString("yyyy-MM-ddTHH:mm");
+                                        
+                                        // Tarayıcıya yansıtmak için saniyesiz formatı kullanıyoruz
+                                        // Bazı tarayıcılarda saniyeli format sorun çıkarabiliyor
+                                    }
+                                    <input type="datetime-local" 
+                                           name="AvailableDates[@i]" 
+                                           value="@isoDateValue" 
+                                           class="pl-10 w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all date-time-input" />
+                                </div>
+                                <button type="button" class="delete-date text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-3 rounded-lg transition-colors">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="flex items-center gap-2">
+                            <div class="relative flex-grow">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-calendar-alt text-gray-400"></i>
+                                </div>
+                                <input type="datetime-local" name="AvailableDates[0]" class="pl-10 w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all date-time-input" />
+                            </div>
+                            <button type="button" class="delete-date text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-3 rounded-lg transition-colors">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+            
+            <div class="flex justify-between mt-8">
+                <a asp-action="Index" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg inline-flex items-center transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to List
+                </a>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg inline-flex items-center transition-colors">
+                    <i class="fas fa-save mr-2"></i>
+                    Update
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(document).ready(function() {
+            // Mevcut tarih değerlerini kontrol et
+            console.log("Sayfa yüklenirken mevcut tarih değerleri:");
+            $(".date-time-input").each(function(index) {
+                console.log("Tarih #" + index + ": " + $(this).val() + ", Name: " + $(this).attr("name"));
+            });
+            
+            // Değişiklik izleme
+            $(document).on("change", ".date-time-input", function() {
+                console.log("Tarih değeri değişti: " + $(this).attr("name") + " = " + $(this).val());
+            });
+            
+            // Yeni tarih ekle
+            let dateIndex = @(Model.AvailableDates != null ? Model.AvailableDates.Count : 1);
+            $("#add-date").click(function() {
+                const now = new Date();
+                const formattedDate = now.getFullYear() + "-" + 
+                    String(now.getMonth() + 1).padStart(2, "0") + "-" + 
+                    String(now.getDate()).padStart(2, "0") + "T" + 
+                    String(now.getHours()).padStart(2, "0") + ":" + 
+                    String(now.getMinutes()).padStart(2, "0");
+                
+                const newRow = $(`
+                    <div class="flex items-center gap-2 animate-fade-in">
+                        <div class="relative flex-grow">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-calendar-alt text-gray-400"></i>
+                            </div>
+                            <input type="datetime-local" 
+                                   name="AvailableDates[${dateIndex}]" 
+                                   value="${formattedDate}"
+                                   class="pl-10 w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all date-time-input" />
+                        </div>
+                        <button type="button" class="delete-date text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-3 rounded-lg transition-colors">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `);
+                
+                $("#dates-container").append(newRow);
+                console.log("Yeni tarih alanı eklendi: ", "AvailableDates[" + dateIndex + "]", formattedDate);
+                dateIndex++;
+                
+                // Eklendikten sonra indeksleri güncelle
+                reindexDateFields();
+            });
+            
+            // Tarih sil
+            $(document).on("click", ".delete-date", function() {
+                if ($("#dates-container").children().length > 1) {
+                    const row = $(this).closest('.flex');
+                    const input = row.find('input');
+                    console.log("Silinecek tarih: ", input.attr("name"), input.val());
+                    
+                    row.fadeOut(300, function() {
+                        $(this).remove();
+                        reindexDateFields();
+                    });
+                } else {
+                    alert("En az bir tarih-saat değeri gereklidir!");
+                }
+            });
+            
+            // Form gönderildiğinde
+            $("#editForm").on("submit", function(e) {
+                console.log("Form gönderiliyor...");
+                
+                // Tarih alanlarını reindexle
+                reindexDateFields();
+                
+                // Boş tarih kontrolü
+                let hasEmptyDate = false;
+                $(".date-time-input").each(function() {
+                    if (!$(this).val()) {
+                        hasEmptyDate = true;
+                        $(this).addClass("border-red-500");
+                    } else {
+                        $(this).removeClass("border-red-500");
+                    }
+                });
+                
+                if (hasEmptyDate) {
+                    e.preventDefault();
+                    alert("Lütfen tüm tarih ve saat alanlarını doldurun!");
+                    return false;
+                }
+                
+                // Tüm form verilerini göster (debug için)
+                const formData = $(this).serializeArray();
+                console.log("Gönderilen form verileri:", formData);
+                
+                // Formun normal şekilde gönderilmesine izin ver
+                return true;
+            });
+            
+            // Tarih alanlarını yeniden indeksle
+            function reindexDateFields() {
+                console.log("Tarih alanları yeniden indeksleniyor...");
+                let newIndex = 0;
+                $("#dates-container .date-time-input").each(function() {
+                    const oldName = $(this).attr("name");
+                    const newName = "AvailableDates[" + newIndex + "]";
+                    
+                    if (oldName !== newName) {
+                        console.log("İndeks değişiyor: " + oldName + " -> " + newName);
+                        $(this).attr("name", newName);
+                    }
+                    
+                    newIndex++;
+                });
+                console.log("Toplam " + newIndex + " tarih alanı indekslendi");
+            }
+        });
+    </script>
+    
+    <style>
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+        
+        @@keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+} 

@@ -10,14 +10,15 @@ namespace CityberryTravel.Models
 
         [Required] 
         [StringLength(100)] 
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         [StringLength(500)] 
-        public string Description { get; set; }
+        public required string Description { get; set; }
 
         [Column(TypeName = "decimal(18, 2)")] 
-        public decimal Price { get; set; }
+        public required decimal Price { get; set; }
 
-        public List<DateTime> AvailableDates { get; set; }
+        [Display(Name = "Available Dates & Times")]
+        public List<DateTime> AvailableDates { get; set; } = new List<DateTime>();
     }
 }

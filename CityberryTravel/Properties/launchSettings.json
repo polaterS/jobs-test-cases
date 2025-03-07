@@ -18,6 +18,28 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    },
+    "Production": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:7031;http://localhost:5109",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Production"
+      }
+    },
+    "Azure": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "https://cityberry-travel-cyb5cffphtekh8ba.westeurope-01.azurewebsites.net",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Production",
+        "PGHOST": "cityberry-postgres.postgres.database.azure.com",
+        "PGUSER": "suheybpolater@gmail.com",
+        "PGPORT": "5432",
+        "PGDATABASE": "postgres" 
+      }
     }
   }
 }

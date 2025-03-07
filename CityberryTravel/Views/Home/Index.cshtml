@@ -1,8 +1,110 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Hero Section -->
+<div class="bg-gradient-to-r from-blue-500 to-indigo-600 py-16">
+    <div class="container mx-auto px-4 text-center">
+        <h1 class="text-4xl font-bold text-white mb-4">Cityberry Travel</h1>
+        <p class="text-xl text-white mb-4">Creating destination based innovative services and cutting-edge technologies for travel sector since 1995.</p>
+        <p class="text-lg text-white/80 mb-8 max-w-3xl mx-auto">State-of-the-art travel technologies and services for world's top destinations.</p>
+        <a href="@Url.Action("Index", "TravelDestination")" class="bg-white text-blue-600 hover:bg-blue-50 font-bold py-3 px-6 rounded-full inline-flex items-center">
+            <i class="fas fa-search mr-2"></i> Explore Destinations
+        </a>
+    </div>
+</div>
+
+<!-- Our Story Timeline -->
+<div class="bg-gray-50 py-16">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Our Journey</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">Over 25 years of excellence in travel services and innovation.</p>
+        </div>
+
+        <div class="relative">
+            <!-- Timeline Line -->
+            <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-0.5 bg-blue-300"></div>
+            
+            <!-- 1995 -->
+            <div class="relative mb-16">
+                <div class="md:flex items-center justify-between">
+                    <div class="md:w-5/12 mb-6 md:mb-0 md:pr-10 md:text-right">
+                        <h3 class="text-xl font-bold text-blue-600">1995</h3>
+                        <p class="text-gray-700 mt-2">Started as Istanbul travel experts, curating unique tours and experiences for visitors.</p>
+                    </div>
+                    <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-5 h-5 rounded-full bg-blue-500 border-4 border-white"></div>
+                    <div class="md:w-5/12 md:pl-10">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 1995-2021 -->
+            <div class="relative mb-16">
+                <div class="md:flex items-center justify-between">
+                    <div class="md:w-5/12 mb-6 md:mb-0"></div>
+                    <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-5 h-5 rounded-full bg-blue-500 border-4 border-white"></div>
+                    <div class="md:w-5/12 md:pl-10">
+                        <h3 class="text-xl font-bold text-blue-600">1995-2021</h3>
+                        <p class="text-gray-700 mt-2">25+ years serving Istanbul visitors with unmissable local tours, experiences, and travel technologies.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 2022 -->
+            <div class="relative mb-16">
+                <div class="md:flex items-center justify-between">
+                    <div class="md:w-5/12 mb-6 md:mb-0 md:pr-10 md:text-right">
+                        <h3 class="text-xl font-bold text-blue-600">2022</h3>
+                        <p class="text-gray-700 mt-2">Expanded to Cappadocia with cappadociatravelpass.com, bringing our expertise to a new destination.</p>
+                    </div>
+                    <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-5 h-5 rounded-full bg-blue-500 border-4 border-white"></div>
+                    <div class="md:w-5/12 md:pl-10"></div>
+                </div>
+            </div>
+            
+            <!-- 2024 -->
+            <div class="relative">
+                <div class="md:flex items-center justify-between">
+                    <div class="md:w-5/12 mb-6 md:mb-0"></div>
+                    <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-5 h-5 rounded-full bg-blue-500 border-4 border-white"></div>
+                    <div class="md:w-5/12 md:pl-10">
+                        <h3 class="text-xl font-bold text-blue-600">2024</h3>
+                        <p class="text-gray-700 mt-2">Launched AI Tech Lab in DIFC Innovation Hub in Dubai to develop cutting-edge AI-based travel products.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Future Vision -->
+<div class="container mx-auto px-4 py-16">
+    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-10 rounded-lg shadow-md">
+        <div class="md:flex items-center">
+            <div class="md:w-2/3 mb-10 md:mb-0 md:pr-10">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Our Future Vision</h2>
+                <p class="text-lg text-gray-600 mb-6">Now it's time for us to expand our services to other popular tourism destinations like Dubai & London.</p>
+                <p class="text-gray-600">Follow us to stay updated on Cityberry's upcoming news and innovations.</p>
+                <div class="mt-8">
+                    <a href="@Url.Action("Index", "TravelDestination")" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full inline-flex items-center">
+                        <i class="fas fa-plane-departure mr-2"></i> Explore Our Destinations
+                    </a>
+                </div>
+            </div>
+            <div class="md:w-1/3 flex justify-center">
+                <div class="text-blue-500 text-8xl opacity-80">
+                    <i class="fas fa-globe-americas"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Enjoy Banner -->
+<div class="bg-blue-600 py-10">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-4xl font-bold text-white mb-2">ENJOY!</h2>
+        <p class="text-xl text-white/80">Your journey with Cityberry begins here.</p>
+    </div>
 </div>

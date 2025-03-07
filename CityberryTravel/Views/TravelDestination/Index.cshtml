@@ -1,0 +1,212 @@
+@model IEnumerable<CityberryTravel.Models.TravelDestination>
+
+@{
+    ViewData["Title"] = "Destinations";
+    Layout = "_Layout";
+}
+
+<div class="bg-gradient-to-r from-blue-500 to-indigo-600 py-10">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-white mb-2">Travel Destinations</h1>
+                <p class="text-white/80">Discover our carefully curated destinations around the world</p>
+            </div>
+            <div class="mt-4 md:mt-0">
+                <a href="@Url.Action("Create")" class="bg-white text-blue-600 hover:bg-blue-50 font-bold py-2 px-4 rounded-lg inline-flex items-center transition-all shadow-md">
+                    <i class="fas fa-plus mr-2"></i> Add New Destination
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 py-8">
+    <!-- Search & Filter -->
+    <div class="bg-white p-4 rounded-lg shadow-md mb-8">
+        <div class="flex flex-col md:flex-row gap-4">
+            <div class="flex-grow">
+                <div class="relative">
+                    <input type="text" id="destination-search" class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Search destinations...">
+                    <div class="absolute left-3 top-2.5 text-gray-400">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-shrink-0">
+                <select id="price-filter" class="w-full md:w-auto px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="">Price (All)</option>
+                    <option value="0-1000">Under $1000</option>
+                    <option value="1000-2000">$1000 - $2000</option>
+                    <option value="2000+">Over $2000</option>
+                </select>
+            </div>
+            <div class="flex-shrink-0">
+                <select id="date-filter" class="w-full md:w-auto px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="">Date Availability (All)</option>
+                    <option value="this-month">This Month</option>
+                    <option value="next-month">Next Month</option>
+                    <option value="future">Future Dates</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <!-- Destinations Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="destinations-grid">
+            @foreach (var item in Model)
+            {
+                <div class="destination-card bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:shadow-lg hover:-translate-y-1" data-price="@item.Price">
+                    <!-- Card Header with Price Badge -->
+                    <div class="relative">
+                        <div class="h-48 bg-gradient-to-r from-blue-400 to-indigo-500 flex items-center justify-center">
+                            <i class="fas fa-globe-americas text-white text-6xl opacity-30"></i>
+                        </div>
+                        <div class="absolute top-4 right-4 bg-white py-1 px-3 rounded-full text-blue-600 font-bold shadow-md">
+                            @item.Price.ToString("C")
+                        </div>
+                    </div>
+                    
+                    <!-- Card Body -->
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">@item.Name</h3>
+                        <p class="text-gray-600 mb-4 line-clamp-3">@item.Description</p>
+                        
+                        <!-- Available Dates -->
+                        <div class="mb-4">
+                            <h4 class="text-sm font-semibold text-gray-700 mb-2">Available Dates:</h4>
+                            @if (item.AvailableDates != null && item.AvailableDates.Any())
+                            {
+                                <div class="flex flex-wrap gap-2">
+                                    @foreach (var date in item.AvailableDates.Take(3))
+                                    {
+                                        <span class="bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded">
+                                            <i class="far fa-calendar-alt mr-1"></i>@date.ToString("MMM d, yyyy")
+                                            <span class="ml-1 font-medium"><i class="far fa-clock mr-1"></i>@date.ToString("HH:mm")</span>
+                                        </span>
+                                    }
+                                    @if (item.AvailableDates.Count > 3)
+                                    {
+                                        <span class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded">+@(item.AvailableDates.Count - 3) more</span>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="text-gray-500 text-sm italic">No dates available</p>
+                            }
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="flex justify-between items-center pt-4 border-t border-gray-100">
+                            <div class="space-x-2">
+                                <a href="@Url.Action("Edit", new { id = item.Id })" class="inline-flex items-center text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-edit mr-1"></i> Edit
+                                </a>
+                                <a href="@Url.Action("Delete", new { id = item.Id })" class="inline-flex items-center text-red-600 hover:text-red-800">
+                                    <i class="fas fa-trash mr-1"></i> Delete
+                                </a>
+                            </div>
+                            <a href="@Url.Action("Details", new { id = item.Id })" class="inline-flex items-center bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg transition-colors">
+                                <i class="fas fa-info-circle mr-1"></i> Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="bg-white rounded-lg shadow-md p-8 text-center">
+            <div class="text-gray-400 mb-4">
+                <i class="fas fa-globe text-6xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2">No destinations found</h3>
+            <p class="text-gray-500 mb-6">Start by adding your first travel destination</p>
+            <a href="@Url.Action("Create")" class="inline-flex items-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                <i class="fas fa-plus mr-2"></i> Add New Destination
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Search functionality
+            $("#destination-search").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $(".destination-card").filter(function() {
+                    var matches = $(this).text().toLowerCase().indexOf(value) > -1;
+                    $(this).toggle(matches);
+                });
+                checkNoResults();
+            });
+
+            // Price filter
+            $("#price-filter").on("change", function() {
+                var value = $(this).val();
+                
+                if (value === "") {
+                    $(".destination-card").show();
+                } else {
+                    var range = value.split("-");
+                    $(".destination-card").each(function() {
+                        var price = parseFloat($(this).data("price"));
+                        
+                        if (range.length === 2) {
+                            var min = parseFloat(range[0]);
+                            var max = parseFloat(range[1]);
+                            $(this).toggle(price >= min && price <= max);
+                        } else {
+                            var min = parseFloat(range[0].replace("+", ""));
+                            $(this).toggle(price >= min);
+                        }
+                    });
+                }
+                checkNoResults();
+            });
+
+            // Check for no results
+            function checkNoResults() {
+                if ($(".destination-card:visible").length === 0) {
+                    if ($("#no-results").length === 0) {
+                        $("#destinations-grid").after(
+                            '<div id="no-results" class="bg-white rounded-lg shadow-md p-8 text-center mt-6">' +
+                            '  <div class="text-gray-400 mb-4"><i class="fas fa-search text-5xl"></i></div>' +
+                            '  <h3 class="text-xl font-semibold text-gray-700 mb-2">No matching destinations</h3>' +
+                            '  <p class="text-gray-500">Try adjusting your search or filters</p>' +
+                            '</div>'
+                        );
+                    }
+                } else {
+                    $("#no-results").remove();
+                }
+            }
+
+            // Add animation class when page loads
+            $(".destination-card").addClass("animate-fade-in");
+        });
+    </script>
+
+    <style>
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+        
+        @@keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+} 

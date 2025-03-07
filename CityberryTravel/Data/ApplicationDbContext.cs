@@ -1,5 +1,6 @@
 ﻿using CityberryTravel.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace CityberryTravel.Data
 {
@@ -18,6 +19,13 @@ namespace CityberryTravel.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<TravelDestination>().Property(p => p.Price).HasColumnType("decimal(18,2)");
+            
+            modelBuilder.Entity<TravelDestination>()
+                .Property(p => p.AvailableDates)
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, new JsonSerializerOptions()),
+                    v => JsonSerializer.Deserialize<List<DateTime>>(v, new JsonSerializerOptions()) ?? new List<DateTime>()
+                );
         }
     }
 }
