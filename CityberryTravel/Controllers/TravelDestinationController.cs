@@ -149,7 +149,37 @@ namespace CityberryTravel.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Destinasyon oluşturulurken hata oluştu");
-                ModelState.AddModelError("", "Destinasyon oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.");
+                
+                // Hata tipine göre daha açıklayıcı mesajlar ekleyelim
+                string errorMessage = "Destinasyon oluşturulurken bir hata oluştu. ";
+                
+                if (ex.InnerException != null)
+                {
+                    _logger.LogError(ex.InnerException, "İç hata detayı");
+                    errorMessage += ex.InnerException.Message;
+                }
+                
+                // Veritabanı bağlantı hatası mı kontrol edelim
+                if (ex.Message.Contains("connection") || 
+                    (ex.InnerException != null && ex.InnerException.Message.Contains("connection")))
+                {
+                    errorMessage = "Veritabanına bağlanırken bir sorun oluştu. Lütfen daha sonra tekrar deneyin.";
+                }
+                
+                // Model doğrulama hatası var mı?
+                if (!ModelState.IsValid)
+                {
+                    errorMessage += " Lütfen tüm gerekli alanları doldurun.";
+                    foreach (var state in ModelState)
+                    {
+                        foreach (var error in state.Value.Errors)
+                        {
+                            _logger.LogWarning($"ModelState Error for {state.Key}: {error.ErrorMessage}");
+                        }
+                    }
+                }
+                
+                ModelState.AddModelError("", errorMessage);
                 return View(destination ?? new TravelDestination { 
                     Name = "", 
                     Description = "", 

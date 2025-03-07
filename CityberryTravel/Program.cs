@@ -58,8 +58,6 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cityberry Travel API v1"));
 }
 else
 {
@@ -68,8 +66,12 @@ else
     app.UseHsts();
 }
 
+// Swagger için yapılandırma - tüm ortamlarda aktif
+app.UseSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cityberry Travel API v1"));
+
 app.UseHttpsRedirection();
-app.UseStaticFiles(); 
+app.UseStaticFiles();
 
 app.UseRouting();
 
@@ -97,8 +99,43 @@ using (var scope = app.Services.CreateScope())
         }
         
         logger.LogInformation("Veritabanı migrasyonu başlatılıyor...");
-        context.Database.Migrate();
-        logger.LogInformation("Veritabanı migrasyonu tamamlandı.");
+        
+        // Veritabanı bağlantısını kontrol et
+        bool dbExists = false;
+        try 
+        {
+            dbExists = context.Database.CanConnect();
+            logger.LogInformation($"Veritabanı bağlantısı: {(dbExists ? "Başarılı" : "Başarısız")}");
+        }
+        catch (Exception dbEx)
+        {
+            logger.LogError(dbEx, "Veritabanı bağlantı kontrolü sırasında hata");
+        }
+        
+        // Migration'ları uygula
+        try
+        {
+            context.Database.Migrate();
+            logger.LogInformation("Veritabanı migrasyonu tamamlandı.");
+        }
+        catch (Exception migEx)
+        {
+            logger.LogError(migEx, "Veritabanı migrasyonu sırasında hata");
+            
+            // Eğer migration sorunluysa, veritabanını oluşturmayı deneyelim
+            if (!dbExists)
+            {
+                try
+                {
+                    context.Database.EnsureCreated();
+                    logger.LogInformation("Veritabanı EnsureCreated ile oluşturuldu.");
+                }
+                catch (Exception createEx)
+                {
+                    logger.LogError(createEx, "Veritabanı oluşturma sırasında hata");
+                }
+            }
+        }
         
         if (!context.TravelDestinations.Any())
         {
